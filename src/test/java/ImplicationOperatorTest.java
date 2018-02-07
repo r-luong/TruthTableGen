@@ -14,7 +14,7 @@ public class ImplicationOperatorTest {
 		boolean answers[] = {true, true, false, true};
 		ArrayList<Boolean> output = root.getTruthTableResults();
 		for (int i = 0; i < output.size(); ++i) {
-			assertEquals(output.get(i), answers[i]);
+			assertEquals(answers[i], output.get(i));
 		}
 	}
 	
@@ -26,7 +26,7 @@ public class ImplicationOperatorTest {
 		boolean answers[] = {true, true, false, true};
 		ArrayList<Boolean> output = root.getTruthTableResults();
 		for (int i = 0; i < output.size(); ++i) {
-			assertEquals(output.get(i), answers[i]);
+			assertEquals(answers[i], output.get(i));
 		}
 	}
 	
@@ -38,7 +38,7 @@ public class ImplicationOperatorTest {
 		boolean answers[] = {false, true, false, true, true, true, false, true};
 		ArrayList<Boolean> output = root.getTruthTableResults();
 		for (int i = 0; i < output.size(); ++i) {
-			assertEquals(output.get(i), answers[i]);
+			assertEquals(answers[i], output.get(i));
 		}
 	}
 	
@@ -50,7 +50,7 @@ public class ImplicationOperatorTest {
 		boolean answers[] = {true, true, true, true, true, true, false, true};
 		ArrayList<Boolean> output = root.getTruthTableResults();
 		for (int i = 0; i < output.size(); ++i) {
-			assertEquals(output.get(i), answers[i]);
+			assertEquals(answers[i], output.get(i));
 		}
 	}
 
@@ -63,10 +63,10 @@ public class ImplicationOperatorTest {
 		boolean answers[] = {true, true, true, true, true, true, false, true};
 		ArrayList<Boolean> output = root.getTruthTableResults();
 		for (int i = 0; i < output.size(); ++i) {
-			assertEquals(output.get(i), answers[i]);
+			assertEquals(answers[i], output.get(i));
 		}
 	}
-	
+
 	@Test
 	public void MultipleImplicationTest1() {
 		String input = "((((P>Q)>R))>S)";
@@ -76,7 +76,7 @@ public class ImplicationOperatorTest {
 							false, true, false, true, true, true, false, true};
 		ArrayList<Boolean> output = root.getTruthTableResults();
 		for (int i = 0; i < output.size(); ++i) {
-			assertEquals(output.get(i), answers[i]);
+			assertEquals(answers[i], output.get(i));
 		}
 	}
 }

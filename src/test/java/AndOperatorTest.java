@@ -14,7 +14,7 @@ public class AndOperatorTest {
 		boolean answers[] = {false, false, false, true};
 		ArrayList<Boolean> output = root.getTruthTableResults();
 		for (int i = 0; i < output.size(); ++i) {
-			assertEquals(output.get(i), answers[i]);
+			assertEquals(answers[i], output.get(i));
 		}
 	}
 	
@@ -26,7 +26,7 @@ public class AndOperatorTest {
 		boolean answers[] = {false, false, false, true};
 		ArrayList<Boolean> output = root.getTruthTableResults();
 		for (int i = 0; i < output.size(); ++i) {
-			assertEquals(output.get(i), answers[i]);
+			assertEquals(answers[i], output.get(i));
 		}
 	}
 	
@@ -38,7 +38,7 @@ public class AndOperatorTest {
 		boolean answers[] = {false, false, false, false, false, false, false, true};
 		ArrayList<Boolean> output = root.getTruthTableResults();
 		for (int i = 0; i < output.size(); ++i) {
-			assertEquals(output.get(i), answers[i]);
+			assertEquals(answers[i], output.get(i));
 		}
 	}
 	
@@ -50,7 +50,7 @@ public class AndOperatorTest {
 		boolean answers[] = {false, false, false, false, false, false, false, true};
 		ArrayList<Boolean> output = root.getTruthTableResults();
 		for (int i = 0; i < output.size(); ++i) {
-			assertEquals(output.get(i), answers[i]);
+			assertEquals(answers[i], output.get(i));
 		}
 	}
 
@@ -63,7 +63,7 @@ public class AndOperatorTest {
 							false, false, false, false, false, false, false, true};
 		ArrayList<Boolean> output = root.getTruthTableResults();
 		for (int i = 0; i < output.size(); ++i) {
-			assertEquals(output.get(i), answers[i]);
+			assertEquals(answers[i], output.get(i));
 		}
 	}
 

@@ -11,7 +11,7 @@ public class InvalidExpressionTest {
 		String input = "";
 		ArrayList<Token> tokens = p.createTokensFromInput(input);
         ParseTreeRoot root = p.createParseTree(tokens);
-		assertEquals(p.isValidExpr(tokens), false);
+		assertEquals(false, p.isValidExpr(tokens));
 	}
 	
 	@Test
@@ -19,7 +19,7 @@ public class InvalidExpressionTest {
 		String input = "PP";
 		ArrayList<Token> tokens = p.createTokensFromInput(input);
         ParseTreeRoot root = p.createParseTree(tokens);
-		assertEquals(p.isValidExpr(tokens), false);
+		assertEquals(false, p.isValidExpr(tokens));
 	}
 	
 	@Test
@@ -27,7 +27,7 @@ public class InvalidExpressionTest {
 		String input = "^^";
 		ArrayList<Token> tokens = p.createTokensFromInput(input);
         ParseTreeRoot root = p.createParseTree(tokens);
-		assertEquals(p.isValidExpr(tokens), false);
+		assertEquals(false, p.isValidExpr(tokens));
 	}
 	
 	@Test
@@ -35,7 +35,7 @@ public class InvalidExpressionTest {
 		String input = "P^^Q";
 		ArrayList<Token> tokens = p.createTokensFromInput(input);
         ParseTreeRoot root = p.createParseTree(tokens);
-		assertEquals(p.isValidExpr(tokens), false);
+		assertEquals(false, p.isValidExpr(tokens));
 	}
 	
 	@Test
@@ -43,7 +43,7 @@ public class InvalidExpressionTest {
 		String input = "P~Q";
 		ArrayList<Token> tokens = p.createTokensFromInput(input);
         ParseTreeRoot root = p.createParseTree(tokens);
-		assertEquals(p.isValidExpr(tokens), false);
+		assertEquals(false, p.isValidExpr(tokens));
 	}
 	
 	@Test
@@ -51,7 +51,7 @@ public class InvalidExpressionTest {
 		String input = "()";
 		ArrayList<Token> tokens = p.createTokensFromInput(input);
         ParseTreeRoot root = p.createParseTree(tokens);
-		assertEquals(p.isValidExpr(tokens), false);
+		assertEquals(false, p.isValidExpr(tokens));
 	}
 	
 	@Test
@@ -59,7 +59,7 @@ public class InvalidExpressionTest {
 		String input = "(PVQ";
 		ArrayList<Token> tokens = p.createTokensFromInput(input);
         ParseTreeRoot root = p.createParseTree(tokens);
-		assertEquals(p.isValidExpr(tokens), false);
+		assertEquals(false, p.isValidExpr(tokens));
 	}
 	
 	@Test
@@ -67,7 +67,7 @@ public class InvalidExpressionTest {
 		String input = ")PVQ(";
 		ArrayList<Token> tokens = p.createTokensFromInput(input);
         ParseTreeRoot root = p.createParseTree(tokens);
-		assertEquals(p.isValidExpr(tokens), false);
+		assertEquals(false, p.isValidExpr(tokens));
 	}
 	
 	@Test
@@ -75,7 +75,7 @@ public class InvalidExpressionTest {
 		String input = "=";
 		ArrayList<Token> tokens = p.createTokensFromInput(input);
         ParseTreeRoot root = p.createParseTree(tokens);
-		assertEquals(p.isValidExpr(tokens), false);
+		assertEquals(false, p.isValidExpr(tokens));
 	}
 	
 	@Test
@@ -83,7 +83,7 @@ public class InvalidExpressionTest {
 		String input = "(PVQ)^(WVS)=((XVY)";
 		ArrayList<Token> tokens = p.createTokensFromInput(input);
         ParseTreeRoot root = p.createParseTree(tokens);
-		assertEquals(p.isValidExpr(tokens), false);
+		assertEquals(false, p.isValidExpr(tokens));
 	}
 	
 	@Test
@@ -91,7 +91,7 @@ public class InvalidExpressionTest {
 		String input = "(PVQ)=~()";
 		ArrayList<Token> tokens = p.createTokensFromInput(input);
         ParseTreeRoot root = p.createParseTree(tokens);
-		assertEquals(p.isValidExpr(tokens), false);
+		assertEquals(false, p.isValidExpr(tokens));
 	}
 	
 	@Test
@@ -99,7 +99,7 @@ public class InvalidExpressionTest {
 		String input = "PV~)";
 		ArrayList<Token> tokens = p.createTokensFromInput(input);
         ParseTreeRoot root = p.createParseTree(tokens);
-		assertEquals(p.isValidExpr(tokens), false);
+		assertEquals(false, p.isValidExpr(tokens));
 	}
 
 	@Test
@@ -107,7 +107,15 @@ public class InvalidExpressionTest {
 		String input = "PV(Q~)";
 		ArrayList<Token> tokens = p.createTokensFromInput(input);
         ParseTreeRoot root = p.createParseTree(tokens);
-		assertEquals(p.isValidExpr(tokens), false);
+		assertEquals(false, p.isValidExpr(tokens));
+	}
+
+	@Test
+	public void InvalidExprTest13() {
+		String input = "(~)P";
+		ArrayList<Token> tokens = p.createTokensFromInput(input);
+		ParseTreeRoot root = p.createParseTree(tokens);
+		assertEquals(false, p.isValidExpr(tokens));
 	}
 	
 	

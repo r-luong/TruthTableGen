@@ -19,14 +19,14 @@ public class Parser {
         return instance;
     }
 
-	/**
-	 * Gets a string representing a propositional logic expression and iterates over the characters to create a list of
+    /**
+     * Gets a string representing a propositional logic expression and iterates over the characters to create a list of
      * tokens that represent the symbols in the expression such as the variables and connectives. In the end return
      * this list
-	 * @param inputStr prop logic expression from the user as a string
-	 * @return a list of tokens
-	 */
-	public ArrayList<Token> createTokensFromInput(String inputStr) {
+     * @param inputStr prop logic expression from the user as a string
+     * @return a list of tokens
+     */
+    public ArrayList<Token> createTokensFromInput(String inputStr) {
         ArrayList<Token> tokens = new ArrayList<>();
         char[] charArr = inputStr.toCharArray();
         for (char c: charArr) {
@@ -36,7 +36,7 @@ public class Parser {
             tokens.add(currToken);
         }
         return tokens;
-	}
+    }
 
     /**
      * Checks if a list of tokens is a valid expression or not
@@ -104,7 +104,7 @@ public class Parser {
 
     /**
      * Checks all operators (special case with NOT) have a valid sub expr to their left and right through the
-     * existence of a variable
+     * existence of a variable or sub expression
      * @param tokens List of tokens representing the prop logic expression
      * @return true or false
      */
@@ -117,44 +117,105 @@ public class Parser {
                 operatorIndexes.add(i);
             }
         }
-        // Now check there are sub expressions on the left and right side by searching for the existence of a variable
+        Stack<Token> parenStack = new Stack<>();
+        // Now check there are sub expressions on the left and right side of each operator
+        // Note: Special case for NOT operators as having a NOT either side is valid
         for (int cIndex: operatorIndexes) {
-            boolean varFound = false;
             Token currOperator = tokens.get(cIndex);
-            // Check LHS of the operator
-            // Special case for the NOT operator: Left of NOT if not the start, should be a connective or left paren
-            if (currOperator == Token.NOT && cIndex != 0) {
-                Token leftToken = tokens.get(cIndex-1);
-                if (Token.isVar(leftToken) || leftToken == Token.R_PAREN)
-                    return false;
-            } else {
-                for (int i = cIndex-1; i >= 0; i--) {
-                    Token currToken = tokens.get(i);
-                    if (Token.isVar(currToken)) {
-                        varFound = true;
-                        break;
-                    } else if (Token.isOperator(currToken)) {
-                        // Early exit if the previous connective is found before a variable
-                        return false;
-                    }
-                }
-                if (!varFound) return false;
-            }
-            // Check RHS of the operator
-            varFound = false;
-            for (int i = cIndex+1; i < tokens.size(); i++) {
-                Token currToken = tokens.get(i);
-                if (Token.isVar(currToken)) {
-                    varFound = true;
-                    break;
-                } else if (Token.isOperator(currToken)) {
-                    // Early exit if the next connective is found before a variable
-                    return false;
-                }
-            }
-            if (!varFound) return false;
+            if (operatorTestLeftSide(currOperator, cIndex, tokens, parenStack) == false)
+                return false;
+            if (operatorTestRightSide(currOperator, cIndex, tokens, parenStack) == false)
+                return false;
         }
         return true;
+    }
+
+
+    /**
+     * Helper method for operatorTest: Tests to see if the LHS of an operator contains either a sub expression or a
+     * variable that the operator can be applied to which is required. Special case for the NOT operator as it is the
+     * only operator that can be applied to itself and only applies itself to the sub expression or variable on its RHS
+     * @param currOperator Current operator that we are trying to determine is valid in its use
+     * @param cIndex Current index of the operator in the tokens list
+     * @param tokens List of tokens representing a propositional logic expression
+     * @param parenStack Stack used to keep track of parenthesis to identify sub expressions
+     * @return true or false
+     */
+    private boolean operatorTestLeftSide(Token currOperator, int cIndex, ArrayList<Token> tokens, Stack<Token> parenStack) {
+        parenStack.clear();
+        // A NOT should not have a variable right parenthesis of its left
+        if (currOperator == Token.NOT && cIndex != 0) {
+            Token leftToken = tokens.get(cIndex-1);
+            if (Token.isVar(leftToken) || leftToken == Token.R_PAREN)
+                return false;
+        } else if (currOperator == Token.NOT && cIndex == 0) {
+            // If the NOT is at the start, there doesn't need to be anything on its LHS
+            return true;
+        }
+        // Iterate to search that there is either a sub expression or a variable that the operator is applied to
+        for (int i = cIndex-1; i >= 0; i--) {
+            Token currToken = tokens.get(i);
+            // A stack is used to keep track of parenthesis to identify sub expressions that have been grouped
+            if (currToken == Token.L_PAREN) {
+                // On the LHS of an operator, a right parenthesis should be the first one we encounter, should be left
+                if (parenStack.isEmpty())
+                    return false;
+                parenStack.pop();
+                // This means a grouped sub expression has been found which the operator can be applied on
+                if (parenStack.isEmpty())
+                    return true;
+            } else if (currToken == Token.R_PAREN) {
+                parenStack.add(currToken);
+            } else if (Token.isVar(currToken) && parenStack.isEmpty()) {
+                return true;
+            } else if (Token.isOperator(currToken) && parenStack.isEmpty()) {
+                // It is valid for the LHS of a NOT to be a NOT
+                if (currOperator == Token.NOT && currToken == Token.NOT)
+                    return true;
+                // Invalid if an operator is found before a sub expression or variable
+                return false;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * Helper method for operatorTest: Tests to see if the RHS of an operator contains either a sub expression or a
+     * variable that the operator can be applied to which is required. Special case for the NOT operator as it is the
+     * only operator that can be applied to itself and only applies itself to the sub expression or variable on its RHS
+     * @param currOperator Current operator that we are trying to determine is valid in its use
+     * @param cIndex Current index of the operator in the tokens list
+     * @param tokens List of tokens representing a propositional logic expression
+     * @param parenStack Stack used to keep track of parenthesis to identify sub expressions
+     * @return true or false
+     */
+    private boolean operatorTestRightSide(Token currOperator, int cIndex, ArrayList<Token> tokens, Stack<Token> parenStack) {
+        parenStack.clear();
+        for (int i = cIndex+1; i < tokens.size(); i++) {
+            Token currToken = tokens.get(i);
+            // Keep track of parenthesis to identify sub expressions that have been grouped
+            if (currToken == Token.L_PAREN) {
+                parenStack.add(currToken);
+            } else if (currToken == Token.R_PAREN) {
+                // On the RHS of an operator, a right parenthesis should be the first one we encounter, should be left
+                if (parenStack.isEmpty())
+                    return false;
+                parenStack.pop();
+                // This means a grouped sub expression has been found which the operator can be applied on
+                if (parenStack.isEmpty())
+                    return true;
+            } else if (Token.isVar(currToken) && parenStack.isEmpty()) {
+                return true;
+            } else if (Token.isOperator(currToken) && parenStack.isEmpty()) {
+                // It is valid for the RHS of a NOT to be a NOT
+                if (currOperator == Token.NOT && currToken == Token.NOT)
+                    return true;
+                // Invalid if an operator is found before a sub expression or variable
+                return false;
+            }
+        }
+        return false;
     }
 
     /**
@@ -177,7 +238,7 @@ public class Parser {
         // Order of variables is in the order they appear
         return new LinkedHashSet<>();
     }
-	
+
 
 }
 

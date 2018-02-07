@@ -15,7 +15,7 @@ public class BiconditionalOperatorTest {
 		boolean answers[] = {true, false, false, true};
 		ArrayList<Boolean> output = root.getTruthTableResults();
 		for (int i = 0; i < output.size(); ++i) {
-			assertEquals(output.get(i), answers[i]);
+			assertEquals(answers[i], output.get(i));
 		}
 	}
 	
@@ -27,7 +27,7 @@ public class BiconditionalOperatorTest {
 		boolean answers[] = {true, false, false, true};
 		ArrayList<Boolean> output = root.getTruthTableResults();
 		for (int i = 0; i < output.size(); ++i) {
-			assertEquals(output.get(i), answers[i]);
+			assertEquals(answers[i], output.get(i));
 		}
 	}
 	
@@ -39,7 +39,7 @@ public class BiconditionalOperatorTest {
 		boolean answers[] = {false, true, true, false, true, false, false, true};
 		ArrayList<Boolean> output = root.getTruthTableResults();
 		for (int i = 0; i < output.size(); ++i) {
-			assertEquals(output.get(i), answers[i]);
+			assertEquals(answers[i], output.get(i));
 		}
 	}
 	
@@ -51,7 +51,7 @@ public class BiconditionalOperatorTest {
 		boolean answers[] = {false, true, true, false, true, false, false, true};
 		ArrayList<Boolean> output = root.getTruthTableResults();
 		for (int i = 0; i < output.size(); ++i) {
-			assertEquals(output.get(i), answers[i]);
+			assertEquals(answers[i], output.get(i));
 		}
 	}
 
@@ -63,10 +63,10 @@ public class BiconditionalOperatorTest {
 		boolean answers[] = {false, true, true, false, true, false, false, true};
 		ArrayList<Boolean> output = root.getTruthTableResults();
 		for (int i = 0; i < output.size(); ++i) {
-			assertEquals(output.get(i), answers[i]);
+			assertEquals(answers[i], output.get(i));
 		}
 	}
-	
+
 	@Test
 	public void MultipleBiconditionalTest1() {
 		String input = "((((P=Q)=R))=S)";
@@ -76,7 +76,7 @@ public class BiconditionalOperatorTest {
 							true, true, false, true, false, false, true};
 		ArrayList<Boolean> output = root.getTruthTableResults();
 		for (int i = 0; i < output.size(); ++i) {
-			assertEquals(output.get(i), answers[i]);
+			assertEquals(answers[i], output.get(i));
 		}
 	}
 }

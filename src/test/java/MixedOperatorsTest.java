@@ -14,7 +14,7 @@ public class MixedOperatorsTest {
 		boolean answers[] = {false, true, false, true, false, true, true, true};
 		ArrayList<Boolean> output = root.getTruthTableResults();
 		for (int i = 0; i < output.size(); ++i) {
-			assertEquals(output.get(i), answers[i]);
+			assertEquals(answers[i], output.get(i));
 		}
 	}
 	
@@ -26,7 +26,7 @@ public class MixedOperatorsTest {
 		boolean answers[] = {false, false, false, true, true, true, true, true};
 		ArrayList<Boolean> output = root.getTruthTableResults();
 		for (int i = 0; i < output.size(); ++i) {
-			assertEquals(output.get(i), answers[i]);
+			assertEquals(answers[i], output.get(i));
 		}
 	}
 	
@@ -38,7 +38,7 @@ public class MixedOperatorsTest {
 		boolean answers[] = {false, true, false, false, true, true, true, true};
 		ArrayList<Boolean> output = root.getTruthTableResults();
 		for (int i = 0; i < output.size(); ++i) {
-			assertEquals(output.get(i), answers[i]);
+			assertEquals(answers[i], output.get(i));
 		}
 	}
 	
@@ -50,7 +50,7 @@ public class MixedOperatorsTest {
 		boolean answers[] = {false, false, false, true, false, true, false, true};
 		ArrayList<Boolean> output = root.getTruthTableResults();
 		for (int i = 0; i < output.size(); ++i) {
-			assertEquals(output.get(i), answers[i]);
+			assertEquals(answers[i], output.get(i));
 		}
 	}
 	
@@ -62,7 +62,7 @@ public class MixedOperatorsTest {
 		boolean answers[] = {false, true, true, true, true, true, true, true, true};
 		ArrayList<Boolean> output = root.getTruthTableResults();
 		for (int i = 0; i < output.size(); ++i) {
-			assertEquals(output.get(i), answers[i]);
+			assertEquals(answers[i], output.get(i));
 		}
 	}
 	
@@ -74,7 +74,7 @@ public class MixedOperatorsTest {
 		boolean answers[] = {false, true, false, true, true, false, false, true};
 		ArrayList<Boolean> output = root.getTruthTableResults();
 		for (int i = 0; i < output.size(); ++i) {
-			assertEquals(output.get(i), answers[i]);
+			assertEquals(answers[i], output.get(i));
 		}
 	}
 	
@@ -88,7 +88,7 @@ public class MixedOperatorsTest {
 							false, true, false, false, true, false, true, true, true, false, true};
 		ArrayList<Boolean> output = root.getTruthTableResults();
 		for (int i = 0; i < output.size(); ++i) {
-			assertEquals(output.get(i), answers[i]);
+			assertEquals(answers[i], output.get(i));
 		}
 	}
 	
