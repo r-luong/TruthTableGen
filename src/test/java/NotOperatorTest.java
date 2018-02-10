@@ -6,51 +6,51 @@ public class NotOperatorTest {
 
     private static Parser p = Parser.getInstance();
 
-	@Test
-	public void StandardTruthTableTest() {
-		String input = "~P";
-		ArrayList<Token> tokens = p.createTokensFromInput(input);
+    @Test
+    public void StandardTruthTableTest() {
+        String input = "~P";
+        ArrayList<Token> tokens = p.createTokensFromInput(input);
         ParseTreeRoot root = p.createParseTree(tokens);
-		boolean answers[] = {true, false};
-		ArrayList<Boolean> output = root.getTruthTableResults();
-		for (int i = 0; i < output.size(); ++i) {
-			assertEquals(answers[i], output.get(i));
-		}
-	}
-	
-	@Test
-	public void MultipleNotTest0() {
-		String input = "~(~(~(~P)))";
-		ArrayList<Token> tokens = p.createTokensFromInput(input);
+        boolean answers[] = {true, false};
+        ArrayList<Boolean> output = root.getTruthTableResults();
+        for (int i = 0; i < output.size(); ++i) {
+            assertEquals(answers[i], output.get(i));
+        }
+    }
+
+    @Test
+    public void MultipleNotTest0() {
+        String input = "~(~(~(~P)))";
+        ArrayList<Token> tokens = p.createTokensFromInput(input);
         ParseTreeRoot root = p.createParseTree(tokens);
-		boolean answers[] = {false, true};
-		ArrayList<Boolean> output = root.getTruthTableResults();
-		for (int i = 0; i < output.size(); ++i) {
-			assertEquals(answers[i], output.get(i));
-		}
-	}
-	
-	@Test
-	public void MultipleNotTest1() {
-		String input = "~~~~~~~P";
-		ArrayList<Token> tokens = p.createTokensFromInput(input);
+        boolean answers[] = {false, true};
+        ArrayList<Boolean> output = root.getTruthTableResults();
+        for (int i = 0; i < output.size(); ++i) {
+            assertEquals(answers[i], output.get(i));
+        }
+    }
+
+    @Test
+    public void MultipleNotTest1() {
+        String input = "~~~~~~~P";
+        ArrayList<Token> tokens = p.createTokensFromInput(input);
         ParseTreeRoot root = p.createParseTree(tokens);
-		boolean answers[] = {true, false};
-		ArrayList<Boolean> output = root.getTruthTableResults();
-		for (int i = 0; i < output.size(); ++i) {
-			assertEquals(answers[i], output.get(i));
-		}
-	}
-	
-	@Test
-	public void NestedNotTest0() {
-		String input = "~(((P)))";
-		ArrayList<Token> tokens = p.createTokensFromInput(input);
+        boolean answers[] = {true, false};
+        ArrayList<Boolean> output = root.getTruthTableResults();
+        for (int i = 0; i < output.size(); ++i) {
+            assertEquals(answers[i], output.get(i));
+        }
+    }
+
+    @Test
+    public void NestedNotTest0() {
+        String input = "~(((P)))";
+        ArrayList<Token> tokens = p.createTokensFromInput(input);
         ParseTreeRoot root = p.createParseTree(tokens);
-		boolean answers[] = {true, false};
-		ArrayList<Boolean> output = root.getTruthTableResults();
-		for (int i = 0; i < output.size(); ++i) {
-			assertEquals(answers[i], output.get(i));
-		}
-	}
+        boolean answers[] = {true, false};
+        ArrayList<Boolean> output = root.getTruthTableResults();
+        for (int i = 0; i < output.size(); ++i) {
+            assertEquals(answers[i], output.get(i));
+        }
+    }
 }

@@ -43,7 +43,7 @@ public class Parser {
      * @param tokens list of tokens that form the expression
      * @return true if the tokens form a valid expression, false otherwise
      */
-    public boolean isValidExpr(ArrayList<Token> tokens) {
+    public boolean isValidExpr(List<Token> tokens) {
         // An empty expression is invalid
         if (tokens.isEmpty()) return false;
         // Check there is no unclosed pair of parentheses
@@ -63,7 +63,7 @@ public class Parser {
      * @param tokens Tokens representing the expression
      * @return true if there are no unmatched pairs of parenthesis
      */
-    private boolean isParenBalanced(ArrayList<Token> tokens) {
+    private boolean isParenBalanced(List<Token> tokens) {
         Stack<Token> parenStack = new Stack<>();
         for (Token currToken: tokens) {
             if (currToken == Token.L_PAREN) {
@@ -85,8 +85,8 @@ public class Parser {
      * @param tokens List of tokens representing the prop logic expression
      * @return true if it passes the test
      */
-    private boolean adjacencyTest(ArrayList<Token> tokens) {
-        for (int i = 0; i < tokens.size()-1; ++i) {
+    private boolean adjacencyTest(List<Token> tokens) {
+        for (int i = 0; i < tokens.size()-1; i++) {
             Token currToken = tokens.get(i);
             Token nextToken = tokens.get(i+1);
             if (Token.isVar(currToken) && Token.isVar(nextToken)) {
@@ -108,7 +108,7 @@ public class Parser {
      * @param tokens List of tokens representing the prop logic expression
      * @return true or false
      */
-    private boolean operatorTest(ArrayList<Token> tokens) {
+    private boolean operatorTest(List<Token> tokens) {
         // First find all the connectives in the expr and note their index
         ArrayList<Integer> operatorIndexes = new ArrayList<>();
         for (int i = 0; i < tokens.size(); i++) {
@@ -141,7 +141,7 @@ public class Parser {
      * @param parenStack Stack used to keep track of parenthesis to identify sub expressions
      * @return true or false
      */
-    private boolean operatorTestLeftSide(Token currOperator, int cIndex, ArrayList<Token> tokens, Stack<Token> parenStack) {
+    private boolean operatorTestLeftSide(Token currOperator, int cIndex, List<Token> tokens, Stack<Token> parenStack) {
         parenStack.clear();
         // A NOT should not have a variable right parenthesis of its left
         if (currOperator == Token.NOT && cIndex != 0) {
@@ -190,7 +190,7 @@ public class Parser {
      * @param parenStack Stack used to keep track of parenthesis to identify sub expressions
      * @return true or false
      */
-    private boolean operatorTestRightSide(Token currOperator, int cIndex, ArrayList<Token> tokens, Stack<Token> parenStack) {
+    private boolean operatorTestRightSide(Token currOperator, int cIndex, List<Token> tokens, Stack<Token> parenStack) {
         parenStack.clear();
         for (int i = cIndex+1; i < tokens.size(); i++) {
             Token currToken = tokens.get(i);
@@ -223,9 +223,9 @@ public class Parser {
      * @param tokens list of tokens that represent a valid prop logic expression
      * @return ParseTreeRoot used to evaluate the expression or carry out other operations
      */
-    public ParseTreeRoot createParseTree(ArrayList<Token> tokens) {
+    public ParseTreeRoot createParseTree(List<Token> tokens) {
         formatTokens(tokens);
-        return null;
+        return new ParseTreeRoot(tokens);
     }
 
     /**
@@ -234,17 +234,17 @@ public class Parser {
      * @param tokens List of tokens
      * @return An updated list of tokens
      */
-    private ArrayList<Token> formatTokens(ArrayList<Token> tokens) {
+    private List<Token> formatTokens(List<Token> tokens) {
         // Get the location of all the connectives that are not between parentheses
         Stack<Token> parenStack = new Stack<>();
         ArrayList<Pair> connectives = new ArrayList<>();
-        for (int i = 0; i < tokens.size(); ++i) {
+        for (int i = 0; i < tokens.size(); i++) {
             Token currToken = tokens.get(i);
             if (currToken == Token.L_PAREN) {
                 parenStack.add(Token.L_PAREN);
             } else if (currToken == Token.R_PAREN) {
-                parenStack.remove(Token.R_PAREN);
-            } else if (Token.isConnective(currToken) && parenStack.isEmpty()) {
+                parenStack.pop();
+            } else if (Token.isOperator(currToken) && parenStack.isEmpty()) {
                 connectives.add(new Pair(currToken, i));
             }
         }
@@ -263,6 +263,7 @@ public class Parser {
         in between each operator to allow the parse tree to be easily created*/
         for (Pair p: connectives) {
             // LHS of the current operator
+            parenStack.clear();
             boolean leftParenAdded = false;
             for (int i = p.getIndex()-1; i >= 0; i--) {
                 leftParenAdded = addParenthesis(true, i, tokens, parenStack);
@@ -271,19 +272,29 @@ public class Parser {
                     break;
                 }
             }
+            /* If the left parenthesis wasn't added then add one to the end of the token list since this encloses
+             * the entire expression */
+            if (!leftParenAdded) {
+                tokens.add(0, Token.L_PAREN);
+                for (Pair p2: connectives) {
+                    if (p2.getIndex() < p.getIndex()) {
+                        p2.incrementIndex(1);
+                    }
+                }
+                p.incrementIndex(1);
+            }
             // RHS of the current operator
+            parenStack.clear();
             boolean rightParenAdded = false;
             for (int i = p.getIndex()+1; i < tokens.size(); i++) {
                 rightParenAdded = addParenthesis(false, i, tokens, parenStack);
                 if (rightParenAdded)
                     break;
             }
-            /* If the right parenthesis wasn't added then the left must not have been added as well as these enclose
-             * the entire expression. This is done to allow creating the root of the parse tree to be slightly easier */
+            /* If the right parenthesis wasn't added then add one to the end of the token list since this encloses
+             * the entire expression */
             if (!rightParenAdded) {
-                tokens.add(0, Token.L_PAREN);
                 tokens.add(Token.R_PAREN);
-                p.incrementIndex(1);
             }
             /* Since we added 2 parentheses, we need to offset the operator index of all the operators
              * that come after the current operator*/
@@ -302,14 +313,21 @@ public class Parser {
      * @param parenStack Stack holding parentheses to help determine where to add the new parenthesis
      * @return true if a parenthesis was added, false otherwise
      */
-    private boolean addParenthesis(boolean iteratingLeft, int index, ArrayList<Token> tokens, Stack<Token> parenStack) {
-        parenStack.clear();
+    private boolean addParenthesis(boolean iteratingLeft, int index, List<Token> tokens, Stack<Token> parenStack) {
         Token currToken = tokens.get(index);
         if (currToken == Token.L_PAREN) {
-            parenStack.add(Token.L_PAREN);
+            if (iteratingLeft) {
+                parenStack.pop();
+            } else {
+                parenStack.add(Token.L_PAREN);
+            }
         } else if (currToken == Token.R_PAREN) {
-            parenStack.pop();
-        } else if (Token.isConnective(currToken) && parenStack.isEmpty()) {
+            if (!iteratingLeft) {
+                parenStack.pop();
+            } else {
+                parenStack.add(Token.R_PAREN);
+            }
+        } else if (Token.isOperator(currToken) && parenStack.isEmpty()) {
             // Only add the parenthesis if we are not already in a sub expression
             if (iteratingLeft) {
                 tokens.add(index + 1, Token.L_PAREN);
@@ -323,10 +341,10 @@ public class Parser {
                 int tmpOffset = 1;
                 // Case where there is a not operator in front of the variable
                 while (index - tmpOffset >= 0 && tokens.get(index - tmpOffset) == Token.NOT) {
-                    ++tmpOffset;
+                    tmpOffset++;
                 }
                 // Remember to decrement offset so the left parenthesis goes in front of the variable
-                --tmpOffset;
+                tmpOffset--;
                 tokens.add(index - tmpOffset, Token.L_PAREN);
             } else {
                 tokens.add(index+1, Token.R_PAREN);
@@ -350,21 +368,6 @@ public class Parser {
             }
         }
         return connectives;
-    }
-
-    /**
-     * Forms a list of all the variables in a prop logic expression. Order of variables is in the order they appear
-     * @param tokens List of tokens representing a prop logic expression
-     * @return List of variables
-     */
-    private Set<Token> getVariables(ArrayList<Token> tokens) {
-        Set<Token> varSet = new LinkedHashSet<>();
-        for (Token currToken: tokens) {
-            if (Token.isVar(currToken)) {
-                varSet.add(currToken);
-            }
-        }
-        return varSet;
     }
 }
 
