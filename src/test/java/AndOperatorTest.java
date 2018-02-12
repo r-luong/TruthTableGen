@@ -10,6 +10,7 @@ public class AndOperatorTest {
     public void StandardTruthTableTest() {
         String input = "P^Q";
         ArrayList<Token> tokens = p.createTokensFromInput(input);
+        assertEquals(ValidExprStatus.VALID_EXPR, p.isValidExpr(tokens));
         ParseTreeRoot root = p.createParseTree(tokens);
         boolean answers[] = {false, false, false, true};
         ArrayList<Boolean> output = root.getTruthTableResults();
@@ -22,6 +23,7 @@ public class AndOperatorTest {
     public void NestedAndTest0() {
         String input = "(((P^Q)))";
         ArrayList<Token> tokens = p.createTokensFromInput(input);
+        assertEquals(ValidExprStatus.VALID_EXPR, p.isValidExpr(tokens));
         ParseTreeRoot root = p.createParseTree(tokens);
         boolean answers[] = {false, false, false, true};
         ArrayList<Boolean> output = root.getTruthTableResults();
@@ -34,6 +36,7 @@ public class AndOperatorTest {
     public void NestedAndTest1() {
         String input = "(P^Q)^R";
         ArrayList<Token> tokens = p.createTokensFromInput(input);
+        assertEquals(ValidExprStatus.VALID_EXPR, p.isValidExpr(tokens));
         ParseTreeRoot root = p.createParseTree(tokens);
         boolean answers[] = {false, false, false, false, false, false, false, true};
         ArrayList<Boolean> output = root.getTruthTableResults();
@@ -46,6 +49,7 @@ public class AndOperatorTest {
     public void NestedAndTest2() {
         String input = "P^(Q^R)";
         ArrayList<Token> tokens = p.createTokensFromInput(input);
+        assertEquals(ValidExprStatus.VALID_EXPR, p.isValidExpr(tokens));
         ParseTreeRoot root = p.createParseTree(tokens);
         boolean answers[] = {false, false, false, false, false, false, false, true};
         ArrayList<Boolean> output = root.getTruthTableResults();
@@ -58,6 +62,7 @@ public class AndOperatorTest {
     public void MultipleAndTest() {
         String input = "((((P^Q)^R))^S)";
         ArrayList<Token> tokens = p.createTokensFromInput(input);
+        assertEquals(ValidExprStatus.VALID_EXPR, p.isValidExpr(tokens));
         ParseTreeRoot root = p.createParseTree(tokens);
         boolean answers[] = {false, false, false, false, false, false, false, false,
                             false, false, false, false, false, false, false, true};

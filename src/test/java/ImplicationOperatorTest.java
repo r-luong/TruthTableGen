@@ -10,6 +10,7 @@ public class ImplicationOperatorTest {
 	public void StandardTruthTableTest() {
 		String input = "P>Q";
 		ArrayList<Token> tokens = p.createTokensFromInput(input);
+		assertEquals(ValidExprStatus.VALID_EXPR, p.isValidExpr(tokens));
         ParseTreeRoot root = p.createParseTree(tokens);
 		boolean answers[] = {true, true, false, true};
 		ArrayList<Boolean> output = root.getTruthTableResults();
@@ -22,6 +23,7 @@ public class ImplicationOperatorTest {
 	public void NestedImplicationTest0() {
 		String input = "(((P>Q)))";
 		ArrayList<Token> tokens = p.createTokensFromInput(input);
+		assertEquals(ValidExprStatus.VALID_EXPR, p.isValidExpr(tokens));
         ParseTreeRoot root = p.createParseTree(tokens);
 		boolean answers[] = {true, true, false, true};
 		ArrayList<Boolean> output = root.getTruthTableResults();
@@ -34,6 +36,7 @@ public class ImplicationOperatorTest {
 	public void NestedImplicationTest1() {
 		String input = "(P>Q)>R";
 		ArrayList<Token> tokens = p.createTokensFromInput(input);
+		assertEquals(ValidExprStatus.VALID_EXPR, p.isValidExpr(tokens));
         ParseTreeRoot root = p.createParseTree(tokens);
 		boolean answers[] = {false, true, false, true, true, true, false, true};
 		ArrayList<Boolean> output = root.getTruthTableResults();
@@ -46,6 +49,7 @@ public class ImplicationOperatorTest {
 	public void NestedImplicationTest2() {
 		String input = "P>(Q>R)";
 		ArrayList<Token> tokens = p.createTokensFromInput(input);
+		assertEquals(ValidExprStatus.VALID_EXPR, p.isValidExpr(tokens));
         ParseTreeRoot root = p.createParseTree(tokens);
 		boolean answers[] = {true, true, true, true, true, true, false, true};
 		ArrayList<Boolean> output = root.getTruthTableResults();
@@ -59,6 +63,7 @@ public class ImplicationOperatorTest {
 		// Implication operator should be right associative
 		String input = "P>Q>R";
 		ArrayList<Token> tokens = p.createTokensFromInput(input);
+		assertEquals(ValidExprStatus.VALID_EXPR, p.isValidExpr(tokens));
         ParseTreeRoot root = p.createParseTree(tokens);
 		boolean answers[] = {true, true, true, true, true, true, false, true};
 		ArrayList<Boolean> output = root.getTruthTableResults();
@@ -71,6 +76,7 @@ public class ImplicationOperatorTest {
 	public void MultipleImplicationTest1() {
 		String input = "((((P>Q)>R))>S)";
 		ArrayList<Token> tokens = p.createTokensFromInput(input);
+		assertEquals(ValidExprStatus.VALID_EXPR, p.isValidExpr(tokens));
         ParseTreeRoot root = p.createParseTree(tokens);
 		boolean answers[] = {true, true, false, true, true, true, false, true, 
 							false, true, false, true, true, true, false, true};

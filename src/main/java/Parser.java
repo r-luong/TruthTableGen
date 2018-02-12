@@ -41,19 +41,19 @@ public class Parser {
     /**
      * Checks if a list of tokens is a valid expression or not
      * @param tokens list of tokens that form the expression
-     * @return true if the tokens form a valid expression, false otherwise
+     * @return ValidExprStatus.VALID_EXPR if valid, otherwise another enum is returned detailing why it was invalid
      */
-    public boolean isValidExpr(List<Token> tokens) {
+    public ValidExprStatus isValidExpr(List<Token> tokens) {
         // An empty expression is invalid
-        if (tokens.isEmpty()) return false;
+        if (tokens.isEmpty()) return ValidExprStatus.EMPTY_EXPR;
         // Check there is no unclosed pair of parentheses
-        if (!isParenBalanced(tokens)) return false;
+        if (!isParenBalanced(tokens)) return ValidExprStatus.UNBALANCED_PARENTHESES;
         // Checks that there are no two variables, connective or pair of matching parentheses are adjacent to each other
-        if (!adjacencyTest(tokens)) return false;
+        ValidExprStatus status = adjacencyTest(tokens);
+        if (status != ValidExprStatus.VALID_EXPR) return status;
         // Check all operators have a valid sub expr on their left or right
-        if (!operatorTest(tokens)) return false;
-        return true;
-
+        if (!operatorTest(tokens)) return ValidExprStatus.LHS_OR_RHS_OF_OPERATOR_INVALID;
+        return ValidExprStatus.VALID_EXPR;
     }
 
     // Helper methods to determine if an expression is valid
@@ -83,23 +83,23 @@ public class Parser {
     /**
      * Checks that there are no two variables, connective, pair of matching parentheses are adjacent to each other
      * @param tokens List of tokens representing the prop logic expression
-     * @return true if it passes the test
+     * @return a ValidExprStatus
      */
-    private boolean adjacencyTest(List<Token> tokens) {
+    private ValidExprStatus adjacencyTest(List<Token> tokens) {
         for (int i = 0; i < tokens.size()-1; i++) {
             Token currToken = tokens.get(i);
             Token nextToken = tokens.get(i+1);
             if (Token.isVar(currToken) && Token.isVar(nextToken)) {
-                return false;
+                return ValidExprStatus.ADJACENT_VARIABLES;
             }  else if (Token.isConnective(currToken) && Token.isConnective(nextToken)) {
-                return false;
+                return ValidExprStatus.ADJACENT_OPERATORS;
             } else if (currToken == Token.L_PAREN && nextToken == Token.R_PAREN) {
-                return false;
+                return ValidExprStatus.ADJACENT_PARENTHESES;
             } else if (currToken == Token.NOT && Token.isConnective(nextToken)) {
-                return false;
+                return ValidExprStatus.ADJACENT_OPERATORS;
             }
         }
-        return true;
+        return ValidExprStatus.VALID_EXPR;
     }
 
     /**

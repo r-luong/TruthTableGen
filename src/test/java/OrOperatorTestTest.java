@@ -11,6 +11,7 @@ public class OrOperatorTestTest {
         String input = "PVQ";
         ArrayList<Token> tokens = p.createTokensFromInput(input);
         ParseTreeRoot root = p.createParseTree(tokens);
+        assertEquals(ValidExprStatus.VALID_EXPR, p.isValidExpr(tokens));
         boolean answers[] = {false, true, true, true};
         ArrayList<Boolean> output = root.getTruthTableResults();
         for (int i = 0; i < output.size(); ++i) {
@@ -23,6 +24,7 @@ public class OrOperatorTestTest {
         String input = "(((PVQ)))";
         ArrayList<Token> tokens = p.createTokensFromInput(input);
         ParseTreeRoot root = p.createParseTree(tokens);
+        assertEquals(ValidExprStatus.VALID_EXPR, p.isValidExpr(tokens));
         boolean answers[] = {false, true, true, true};
         ArrayList<Boolean> output = root.getTruthTableResults();
         for (int i = 0; i < output.size(); ++i) {
@@ -35,6 +37,7 @@ public class OrOperatorTestTest {
         String input = "(PVQ)VR";
         ArrayList<Token> tokens = p.createTokensFromInput(input);
         ParseTreeRoot root = p.createParseTree(tokens);
+        assertEquals(ValidExprStatus.VALID_EXPR, p.isValidExpr(tokens));
         boolean answers[] = {false, true, true, true, true, true, true, true};
         ArrayList<Boolean> output = root.getTruthTableResults();
         for (int i = 0; i < output.size(); ++i) {
@@ -47,6 +50,7 @@ public class OrOperatorTestTest {
         String input = "PV(QVR)";
         ArrayList<Token> tokens = p.createTokensFromInput(input);
         ParseTreeRoot root = p.createParseTree(tokens);
+        assertEquals(ValidExprStatus.VALID_EXPR, p.isValidExpr(tokens));
         boolean answers[] = {false, true, true, true, true, true, true, true};
         ArrayList<Boolean> output = root.getTruthTableResults();
         for (int i = 0; i < output.size(); ++i) {
@@ -59,6 +63,7 @@ public class OrOperatorTestTest {
         String input = "((((PVQ)VR))VS)";
         ArrayList<Token> tokens = p.createTokensFromInput(input);
         ParseTreeRoot root = p.createParseTree(tokens);
+        assertEquals(ValidExprStatus.VALID_EXPR, p.isValidExpr(tokens));
         boolean answers[] = {false, true, true, true, true, true, true, true,
                             true, true, true, true, true, true, true, true};
         ArrayList<Boolean> output = root.getTruthTableResults();

@@ -11,6 +11,7 @@ public class MixedOperatorsTest {
         String input = "P^QVR";
         ArrayList<Token> tokens = p.createTokensFromInput(input);
         ParseTreeRoot root = p.createParseTree(tokens);
+        assertEquals(ValidExprStatus.VALID_EXPR, p.isValidExpr(tokens));
         boolean answers[] = {false, true, false, true, false, true, true, true};
         ArrayList<Boolean> output = root.getTruthTableResults();
         for (int i = 0; i < output.size(); ++i) {
@@ -23,6 +24,7 @@ public class MixedOperatorsTest {
         String input = "PVQ^R";
         ArrayList<Token> tokens = p.createTokensFromInput(input);
         ParseTreeRoot root = p.createParseTree(tokens);
+        assertEquals(ValidExprStatus.VALID_EXPR, p.isValidExpr(tokens));
         boolean answers[] = {false, false, false, true, true, true, true, true};
         ArrayList<Boolean> output = root.getTruthTableResults();
         for (int i = 0; i < output.size(); ++i) {
@@ -35,6 +37,7 @@ public class MixedOperatorsTest {
         String input = "PV~Q^R";
         ArrayList<Token> tokens = p.createTokensFromInput(input);
         ParseTreeRoot root = p.createParseTree(tokens);
+        assertEquals(ValidExprStatus.VALID_EXPR, p.isValidExpr(tokens));
         boolean answers[] = {false, true, false, false, true, true, true, true};
         ArrayList<Boolean> output = root.getTruthTableResults();
         for (int i = 0; i < output.size(); ++i) {
@@ -47,6 +50,7 @@ public class MixedOperatorsTest {
         String input = "(PVQ)^R";
         ArrayList<Token> tokens = p.createTokensFromInput(input);
         ParseTreeRoot root = p.createParseTree(tokens);
+        assertEquals(ValidExprStatus.VALID_EXPR, p.isValidExpr(tokens));
         boolean answers[] = {false, false, false, true, false, true, false, true};
         ArrayList<Boolean> output = root.getTruthTableResults();
         for (int i = 0; i < output.size(); ++i) {
@@ -59,6 +63,7 @@ public class MixedOperatorsTest {
         String input = "~(PVQ)>R";
         ArrayList<Token> tokens = p.createTokensFromInput(input);
         ParseTreeRoot root = p.createParseTree(tokens);
+        assertEquals(ValidExprStatus.VALID_EXPR, p.isValidExpr(tokens));
         boolean answers[] = {false, true, true, true, true, true, true, true, true};
         ArrayList<Boolean> output = root.getTruthTableResults();
         for (int i = 0; i < output.size(); ++i) {
@@ -71,6 +76,7 @@ public class MixedOperatorsTest {
         String input = "P>Q=R";
         ArrayList<Token> tokens = p.createTokensFromInput(input);
         ParseTreeRoot root = p.createParseTree(tokens);
+        assertEquals(ValidExprStatus.VALID_EXPR, p.isValidExpr(tokens));
         boolean answers[] = {false, true, false, true, true, false, false, true};
         ArrayList<Boolean> output = root.getTruthTableResults();
         for (int i = 0; i < output.size(); ++i) {
@@ -83,6 +89,7 @@ public class MixedOperatorsTest {
         String input = "P^Q=~RVS>W";
         ArrayList<Token> tokens = p.createTokensFromInput(input);
         ParseTreeRoot root = p.createParseTree(tokens);
+        assertEquals(ValidExprStatus.VALID_EXPR, p.isValidExpr(tokens));
         boolean answers[] = {true, false, true, false, false, false, true, false, true, false,
                             true, false, false, false, true, false, true, false, true, false, false,
                             false, true, false, false, true, false, true, true, true, false, true};
