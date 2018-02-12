@@ -148,6 +148,8 @@ public class Parser {
             Token leftToken = tokens.get(cIndex-1);
             if (Token.isVar(leftToken) || leftToken == Token.R_PAREN)
                 return false;
+            else
+                return true;
         } else if (currOperator == Token.NOT && cIndex == 0) {
             // If the NOT is at the start, there doesn't need to be anything on its LHS
             return true;
@@ -208,10 +210,10 @@ public class Parser {
             } else if (Token.isVar(currToken) && parenStack.isEmpty()) {
                 return true;
             } else if (Token.isOperator(currToken) && parenStack.isEmpty()) {
-                // It is valid for the RHS of a NOT to be a NOT
-                if (currOperator == Token.NOT && currToken == Token.NOT)
+                // Finding a NOT is valid as they can be the sub expression that the operator is applied to
+                if (currToken == Token.NOT)
                     return true;
-                // Invalid if an operator is found before a sub expression or variable
+                // Invalid if an operator other than a NOT is found before a sub expression or variable
                 return false;
             }
         }
@@ -220,7 +222,8 @@ public class Parser {
 
     /**
      * Creates a ParseTreeRoot given a valid propositional logic expression
-     * @param tokens list of tokens that represent a valid prop logic expression
+     * @precondition Must call isValidExpr() on token list before passing it into this function
+     * @param tokens List of tokens that represent a valid prop logic expression
      * @return ParseTreeRoot used to evaluate the expression or carry out other operations
      */
     public ParseTreeRoot createParseTree(List<Token> tokens) {
@@ -298,7 +301,7 @@ public class Parser {
             }
             /* Since we added 2 parentheses, we need to offset the operator index of all the operators
              * that come after the current operator*/
-            connectives = updateIndexes(connectives, p.getIndex());
+            updateIndexes(connectives, p.getIndex());
         }
         return tokens;
     }
@@ -359,15 +362,13 @@ public class Parser {
      * to the token list
      * @param connectives List of pairs containing an operator and its location
      * @param index All operators after this index will be updated
-     * @return An updated list of operators
      */
-    private ArrayList<Pair> updateIndexes(ArrayList<Pair> connectives, int index) {
+    private void updateIndexes(ArrayList<Pair> connectives, int index) {
         for (Pair p: connectives) {
             if (p.getIndex() > index) {
                 p.incrementIndex(2);
             }
-        }
-        return connectives;
+        };
     }
 }
 

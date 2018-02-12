@@ -10,6 +10,8 @@ import java.util.*;
 public class ParseTreeRoot {
     private ParseTreeNode root;
     private Set<Token> variables;
+    private ArrayList<Boolean> results;
+    private List<List<String>> truthTable;
 
     /**
      * Constructor
@@ -23,6 +25,7 @@ public class ParseTreeRoot {
                 variables.add(currToken);
             }
         }
+        generateTruthTable();
     }
 
     /**
@@ -78,49 +81,70 @@ public class ParseTreeRoot {
         }
     }
 
-
     /**
      * Evaluate each sub expression in the tree to return either a true or false value representing the value
      * of the expression with the specified values for the variables in the expression
      * @param currNode Current sub expression to evaluate
      * @param valMappings Ordered HashMap containing the value of each variable
+     * @param currRow List of string representing truth values for each sub expression/expression in the truth table
      * @return a true or false value for the current expression
      */
-    public boolean evalTree(ParseTreeNode currNode, LinkedHashMap<Token, Boolean> valMappings) {
-        // Base case: If the current symbol is a variable
+    public boolean evalTree(ParseTreeNode currNode, LinkedHashMap<Token, Boolean> valMappings, List<String> currRow) {
+        boolean truthVal;
+        /* Base case: If the current symbol is a variable. Don't need to add to currRow since that is handled
+         * already outside of this function*/
         if (Token.isVar(currNode.getCurrToken())) {
             return valMappings.get(currNode.getCurrToken());
+        } else {
+            // Recursive case: Evaluate the left and right hand side of the current node
+            boolean leftVal = true;
+            if (currNode.getCurrToken() != Token.NOT) {
+                leftVal = evalTree(currNode.getLeftNode(), valMappings, currRow);
+            }
+            boolean rightVal = evalTree(currNode.getRightNode(), valMappings, currRow);
+            // Evaluate the current operator
+            switch (currNode.getCurrToken()) {
+                case AND:
+                    truthVal = leftVal && rightVal;
+                    break;
+                case OR:
+                    truthVal = leftVal || rightVal;
+                    break;
+                case NOT:
+                    truthVal = !rightVal;
+                    break;
+                case IMPL:
+                    truthVal = !leftVal || rightVal;
+                    break;
+                case BICOND:
+                    truthVal = (!leftVal || rightVal) && (!rightVal || leftVal);
+                    break;
+                // This should never be reached unless given an unknown symbol which shouldn't be possible
+                default:
+                    truthVal = false;
+            }
         }
-        // Recursive case: Evaluate the left and right hand side of the current node
-        boolean leftVal = true;
-        if (currNode.getCurrToken() != Token.NOT) {
-            leftVal = evalTree(currNode.getLeftNode(), valMappings);
-        }
-        boolean rightVal = evalTree(currNode.getRightNode(), valMappings);
-        // Evaluate the current operator
-        switch (currNode.getCurrToken()) {
-            case AND:
-                return leftVal && rightVal;
-            case OR:
-                return leftVal || rightVal;
-            case NOT:
-                return !rightVal;
-            case IMPL:
-                return !leftVal || rightVal;
-            case BICOND:
-                return (!leftVal || rightVal) && (!rightVal || leftVal);
-            // This should never be reached unless given an unknown symbol
-            default:
-                return false;
-        }
+        String truthValStr = (truthVal == true) ? "T" : "F";
+        currRow.add(truthValStr);
+        return truthVal;
     }
 
     /**
-     * Calculates the truth value of each row in the truth table for the expression
-     * @return A list of the truth values obtained from evaluating each row of the table
+     * Generates the entire truth table for the expression including the sub expressions and their truth values.
+     * Stores the truth table and as a List of List of Strings and stores the results of each row as a list of
+     * booleans.
      */
-    public ArrayList<Boolean> getTruthTableResults() {
-        ArrayList<Boolean> results = new ArrayList<>();
+    public void generateTruthTable() {
+        // Generate the header of the truth table
+        truthTable = new ArrayList<>();
+        ArrayList<String> header = new ArrayList<>();
+        for (Token currVar: variables) {
+            header.add(""+currVar.getCharRep());
+        }
+        getTruthTableHeader(root, header);
+        truthTable.add(header);
+        // Generate the truth values for all subexpressions and the main expression
+        results = new ArrayList<>();
         LinkedHashMap<Token, Boolean> varMappings = new LinkedHashMap<>();
         ArrayList<Token> varList = new ArrayList<>();
         for (Token currVar: variables) {
@@ -135,27 +159,85 @@ public class ParseTreeRoot {
         // Use a binary number set to 0 and increment for every new row
         byte currBinNum = (byte) 0b00000000;
         for (int i = 0; i < rows; i++) {
+            LinkedList<String> currRow = new LinkedList<>();
             Iterator<Token> varIt = varMappings.keySet().iterator();
             int shiftCount = 0;
             while (varIt.hasNext()) {
                 Token varToChange = varIt.next();
-                /* Use a mask and bitshifting to get the next value of a variable according to the
-                 * bits in the binary number */
+                /* Use a mask and bitshifting to get the next value of a variable according to the bits in the binary
+                 * number */
                 if ((currBinNum & (1 << shiftCount)) != 0) {
                     varMappings.put(varToChange, true);
+                    currRow.add("T");
                 } else {
                     varMappings.put(varToChange, false);
+                    currRow.add("F");
                 }
                 shiftCount++;
             }
+            /* Need to reverse the current row of truth values mapped since we added the variables in reverse order
+             * to varMappings */
+            Collections.reverse(currRow);
             currBinNum++;
             // Add the result to the list
-            boolean output = evalTree(root, varMappings);
+            boolean output = evalTree(root, varMappings, currRow);
             results.add(output);
+            truthTable.add(currRow);
         }
+        printTruthTable();
+    }
+    /**
+     * Traverse the Parse tree to get all the sub expressions that make up the expression and add them to a list
+     * which makes up the header row of the truth table
+     * @param currNode Current node in the Parse tree
+     * @param header List of expression/sub expressions for the header of the truth table
+     */
+    private void getTruthTableHeader(ParseTreeNode currNode, List<String> header) {
+        // Base case
+        if (currNode == null || Token.isVar(currNode.getCurrToken()))
+            return;
+        // Recursive case
+        getTruthTableHeader(currNode.getLeftNode(), header);
+        getTruthTableHeader(currNode.getRightNode(), header);
+        header.add(currNode.getExprStr());
+    }
+
+
+    /**
+     * @return Truth value (boolean) for each row in the truth table for the main expression only
+     */
+    public ArrayList<Boolean> getTruthTableResults() {
         return results;
     }
 
+    /**
+     * Prints out the truth table to console
+     */
+    public void printTruthTable() {
+        ArrayList<Integer> headerExprLen = new ArrayList<>();
+        for (int i = 0; i < truthTable.size(); i++) {
+            List<String> currList = truthTable.get(i);
+            for (int j = 0; j < currList.size(); j++) {
+                String currStr = currList.get(j);
+                // Need to get length of each expr in header row to pad truth values later
+                if (i == 0) {
+                    headerExprLen.add(currStr.length());
+                    System.out.print(currStr + " ");
+                } else {
+                    // Pad the truth value with spaces to the right if the length of the expr it came out of is > 1
+                    int exprLen = headerExprLen.get(j);
+                    if (exprLen > 1) {
+                        char[] charArr = new char[exprLen];
+                        Arrays.fill(charArr, ' ');
+                        charArr[exprLen/2] = currStr.charAt(0);
+                        currStr = new String(charArr);
+                    }
+                    System.out.print(currStr + " ");
+                }
+            }
+            System.out.println();
+        }
+    }
 
     /**
      * Start the traversal the Parse tree to get an equivalent expression to the original expression
