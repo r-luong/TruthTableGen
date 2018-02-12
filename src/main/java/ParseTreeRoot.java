@@ -12,6 +12,7 @@ public class ParseTreeRoot {
     private Set<Token> variables;
     private ArrayList<Boolean> results;
     private List<List<String>> truthTable;
+    private String truthTableStr;
 
     /**
      * Constructor
@@ -26,6 +27,7 @@ public class ParseTreeRoot {
             }
         }
         generateTruthTable();
+        setTruthTableStr();
     }
 
     /**
@@ -184,7 +186,6 @@ public class ParseTreeRoot {
             results.add(output);
             truthTable.add(currRow);
         }
-        printTruthTable();
     }
     /**
      * Traverse the Parse tree to get all the sub expressions that make up the expression and add them to a list
@@ -211,9 +212,24 @@ public class ParseTreeRoot {
     }
 
     /**
+     * @return List of List of strings containing each element of the entire truth table
+     */
+    public List<List<String>> getTruthTableAsList() {
+        return truthTable;
+    }
+
+    /**
      * Prints out the truth table to console
      */
     public void printTruthTable() {
+        System.out.println(truthTableStr);
+    }
+
+    /**
+     * Sets the variable truthTableStr to store the entire truth table as a string which is formatted like a table
+     */
+    private void setTruthTableStr() {
+        StringBuilder strBuilder = new StringBuilder();
         ArrayList<Integer> headerExprLen = new ArrayList<>();
         for (int i = 0; i < truthTable.size(); i++) {
             List<String> currList = truthTable.get(i);
@@ -222,7 +238,6 @@ public class ParseTreeRoot {
                 // Need to get length of each expr in header row to pad truth values later
                 if (i == 0) {
                     headerExprLen.add(currStr.length());
-                    System.out.print(currStr + " ");
                 } else {
                     // Pad the truth value with spaces to the right if the length of the expr it came out of is > 1
                     int exprLen = headerExprLen.get(j);
@@ -232,11 +247,13 @@ public class ParseTreeRoot {
                         charArr[exprLen/2] = currStr.charAt(0);
                         currStr = new String(charArr);
                     }
-                    System.out.print(currStr + " ");
+                    strBuilder.append(currStr);
+                    strBuilder.append(" ");
                 }
             }
-            System.out.println();
+            strBuilder.append("\n");
         }
+        truthTableStr = strBuilder.toString();
     }
 
     /**

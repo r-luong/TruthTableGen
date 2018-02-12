@@ -48,6 +48,22 @@ public enum Token {
     }
 
     /**
+     * Get the String the token is mapped to. Used so that unicode characters can replace the placeholder characters
+     * used for the operators when the inputStr is being converted into a list of tokens.
+     * @return a string
+     */
+    public String getStringRep() {
+        switch (charRep) {
+            case '^': return "\u2227";
+            case 'V': return "\u2228";
+            case '>': return "\u2192";
+            case '=': return "\u2194";
+            case '~': return "\u00AC";
+            default: return Character.toString(charRep);
+        }
+    }
+
+    /**
      * Check if the token is a variable
      * @param token the token to check
      * @return true or false

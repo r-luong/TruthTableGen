@@ -11,6 +11,11 @@ public class ParseTreeNode {
     private ParseTreeNode rightNode;
     private String exprStr;
 
+    /**
+     * Constructor: Assumes left and right are null
+     * @param currToken Token the node holds
+     * @param tokens List of tokens that make up the current expression
+     */
     ParseTreeNode(Token currToken, List<Token> tokens) {
         this.currToken = currToken;
         this.leftNode = null;
@@ -18,6 +23,13 @@ public class ParseTreeNode {
         setExprStr(tokens);
     }
 
+    /**
+     * Constructor
+     * @param currToken Token the node holds
+     * @param leftNode Node connected to the left branch of this node
+     * @param rightNode Node connected to the right branch of this node
+     * @param tokens List of tokens that make up the current expression
+     */
     ParseTreeNode(Token currToken, ParseTreeNode leftNode, ParseTreeNode rightNode, List<Token> tokens) {
         this.currToken = currToken;
         this.leftNode = leftNode;
@@ -25,25 +37,42 @@ public class ParseTreeNode {
         setExprStr(tokens);
     }
 
+    /**
+     * Iterates through the list of tokens to create a string representing the expression
+     * @param tokens List of tokens representing a propositional logic expression
+     */
     private void setExprStr(List<Token> tokens) {
-        exprStr = "";
+        StringBuilder stringBuilder = new StringBuilder();;
         for (Token currToken: tokens) {
-            exprStr += currToken.getCharRep();
+            stringBuilder.append(currToken.getStringRep());
         }
+        exprStr = stringBuilder.toString();
     }
 
+    /**
+     * @return Token held in the node
+     */
     public Token getCurrToken() {
         return currToken;
     }
 
+    /**
+     * @return Node connected to left branch of this node
+     */
     public ParseTreeNode getLeftNode() {
         return leftNode;
     }
 
+    /**
+     * @return Node connected to right branch of this node
+     */
     public ParseTreeNode getRightNode() {
         return rightNode;
     }
 
+    /**
+     * @return String representing the expression for this node and its children
+     */
     public String getExprStr() {
         return exprStr;
     }
